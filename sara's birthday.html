@@ -129,30 +129,27 @@ body{
 .env-body{
   width:280px;
   height:176px;
-  background:linear-gradient(150deg,#F4EBDD, #F2E7D5);
+  background:#F4EBDD;
   border-radius:4px 4px 14px 14px;
   position:relative;
   overflow:hidden;
-  border:1px solid #AE8B67;
+  border:1px solid rgba(0,0,0,.06);
 }
 /* inner lining (burgundy, visible when flap opens) */
 .env-lining{
   position:absolute;
   top:0;left:0;
   width:280px;height:88px;
-  background:linear-gradient(160deg, #512324, #3d1a1b);
+  background:#512324;
   z-index:5;
-  border-bottom:1px solid rgba(235,215,170,.15);
 }
-/* parchment texture overlay */
+/* subtle texture */
 .env-body::before{
   content:'';
   position:absolute;inset:0;
   background:
-    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(235,215,170,.05) 3px, rgba(235,215,170,.05) 4px),
-    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(235,215,170,.04) 3px, rgba(235,215,170,.04) 4px),
-    linear-gradient(135deg,rgba(255,255,255,.4) 0%,transparent 50%),
-    linear-gradient(225deg,rgba(235,215,170,.15) 0%,transparent 50%);
+    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0,0,0,.02) 3px, rgba(0,0,0,.02) 4px),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.015) 3px, rgba(0,0,0,.015) 4px);
   pointer-events:none;
 }
 /* bottom triangle crease */
@@ -162,21 +159,21 @@ body{
   height:0;
   border-left:140px solid transparent;
   border-right:140px solid transparent;
-  border-bottom:80px solid #784F45;
+  border-bottom:80px solid #512324;
 }
 /* side creases */
 .env-crease-l{
   position:absolute;
   top:0;left:0;
   width:0;height:0;
-  border-top:88px solid #AE8B67;
+  border-top:88px solid #512324;
   border-right:140px solid transparent;
 }
 .env-crease-r{
   position:absolute;
   top:0;right:0;
   width:0;height:0;
-  border-top:88px solid #AE8B67;
+  border-top:88px solid #512324;
   border-left:140px solid transparent;
 }
 
@@ -195,7 +192,7 @@ body{
   width:0;height:0;
   border-left:140px solid transparent;
   border-right:140px solid transparent;
-  border-top:88px solid #f0e4cf;
+  border-top:88px solid #F4EBDD;
 }
 .env-flap.open{transform:rotateX(180deg);}
 
@@ -342,6 +339,19 @@ body{
 @keyframes glowPulse{
   0%,100%{opacity:.5;transform:scale(1);}
   50%    {opacity:1;transform:scale(1.04);}
+}
+
+/* ── BIRTHDAY SCENE FALLING PARTICLES ── */
+.bday-particle{
+  position:fixed;pointer-events:none;z-index:13;
+  opacity:0;
+  animation:bdayFall linear infinite;
+}
+@keyframes bdayFall{
+  0%  {opacity:0; transform:translateY(-20px) rotate(0deg) translateX(0) scale(.8);}
+  8%  {opacity:1;}
+  85% {opacity:.7;}
+  100%{opacity:0; transform:translateY(105vh) rotate(var(--bspin)) translateX(var(--bsway)) scale(var(--bscale));}
 }
 
 .next-btn{
@@ -717,14 +727,35 @@ waxSeal.addEventListener('click',e=>{
 });
 
 // ── SCENES ──
+let bdayParticleInterval=null;
 function showScene(id){
   document.querySelectorAll('.scene').forEach(s=>s.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
-  // spawn letter petals
+  if(bdayParticleInterval){clearInterval(bdayParticleInterval);bdayParticleInterval=null;}
   if(id==='scene-letter'){
     for(let i=0;i<8;i++) setTimeout(()=>spawnLetterPetal(),i*250);
     setInterval(spawnLetterPetal,800);
   }
+  if(id==='scene-birthday'){
+    bdayParticleInterval=setInterval(spawnBdayParticle,180);
+    for(let i=0;i<12;i++) setTimeout(spawnBdayParticle,i*120);
+  }
+}
+function spawnBdayParticle(){
+  const emojis=['🎈','🌸','🌺','✨','⭐','🎉','💖','🪄'];
+  const el=document.createElement('div');
+  el.className='bday-particle';
+  el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  el.style.left=(Math.random()*100)+'vw';
+  el.style.top='-30px';
+  el.style.setProperty('--bspin',(Math.random()*360-180)+'deg');
+  el.style.setProperty('--bsway',(Math.random()*80-40)+'px');
+  el.style.setProperty('--bscale',(.7+Math.random()*.8));
+  const d=5+Math.random()*7;
+  el.style.animationDuration=d+'s';
+  el.style.fontSize=(20+Math.random()*24)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),(d+3)*1000);
 }
 function spawnLetterPetal(){
   const el=document.createElement('div');
