@@ -123,58 +123,57 @@ body{
 .envelope{
   width:280px;
   position:relative;
-  filter:drop-shadow(0 10px 28px rgba(37,2,5,.22));
-  /* Steady envelope - animation removed */
+  filter:drop-shadow(0 12px 30px rgba(0,0,0,.4));
 }
 .env-body{
   width:280px;
   height:176px;
-  background:#F4EBDD;
+  background:#512324;
   border-radius:4px 4px 14px 14px;
   position:relative;
   overflow:hidden;
-  border:1px solid rgba(0,0,0,.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 -1px 0 rgba(0,0,0,.15);
 }
 /* inner lining */
 .env-lining{
   position:absolute;
   top:0;left:0;
   width:280px;height:88px;
-  background:#F4EBDD;
+  background:#512324;
   z-index:5;
+  box-shadow:inset 0 -1px 0 rgba(0,0,0,.12);
 }
 /* subtle texture */
 .env-body::before{
   content:'';
   position:absolute;inset:0;
   background:
-    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0,0,0,.02) 3px, rgba(0,0,0,.02) 4px),
-    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.015) 3px, rgba(0,0,0,.015) 4px);
-  pointer-events:none;
+    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,.025) 3px, rgba(255,255,255,.025) 4px),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.035) 3px, rgba(0,0,0,.035) 4px);
+  pointer-events:none;z-index:3;
 }
-/* bottom triangle crease */
+/* bottom fold shadow */
 .env-crease{
   position:absolute;
   bottom:0;left:0;right:0;
-  height:0;
-  border-left:140px solid transparent;
-  border-right:140px solid transparent;
-  border-bottom:80px solid #F4EBDD;
+  height:80px;
+  background:linear-gradient(to top, rgba(0,0,0,.15), transparent);
+  pointer-events:none;z-index:2;
 }
-/* side creases */
+/* side fold shadows */
 .env-crease-l{
-  position:absolute;
-  top:0;left:0;
-  width:0;height:0;
-  border-top:88px solid #F4EBDD;
-  border-right:140px solid transparent;
+  position:absolute;top:0;left:0;
+  width:50%;height:88px;
+  background:linear-gradient(to right, rgba(0,0,0,.08), transparent);
+  pointer-events:none;z-index:2;
 }
 .env-crease-r{
-  position:absolute;
-  top:0;right:0;
-  width:0;height:0;
-  border-top:88px solid #F4EBDD;
-  border-left:140px solid transparent;
+  position:absolute;top:0;right:0;
+  width:50%;height:88px;
+  background:linear-gradient(to left, rgba(0,0,0,.08), transparent);
+  pointer-events:none;z-index:2;
 }
 
 /* flap */
@@ -192,9 +191,18 @@ body{
   width:0;height:0;
   border-left:140px solid transparent;
   border-right:140px solid transparent;
-  border-top:88px solid #F4EBDD;
+  border-top:88px solid #512324;
+  filter:drop-shadow(0 -3px 6px rgba(0,0,0,.2));
+}
+.env-flap::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;
+  height:3px;
+  background:linear-gradient(to bottom, rgba(0,0,0,.25), transparent);
+  z-index:7;
 }
 .env-flap.open{transform:rotateX(180deg);}
+.env-flap.open::before{opacity:0;}
 
 /* ── RED SEALING WAX (image) ── */
 .wax-seal{
